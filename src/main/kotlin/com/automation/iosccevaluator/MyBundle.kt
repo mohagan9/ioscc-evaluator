@@ -1,4 +1,4 @@
-package com.github.mohagan9.iosccevaluator
+package com.automation.iosccevaluator
 
 import com.intellij.AbstractBundle
 import org.jetbrains.annotations.NonNls

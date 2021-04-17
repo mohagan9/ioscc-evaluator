@@ -8,12 +8,7 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.mohagan9.iosccevaluator.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.mohagan9.iosccevaluator.services.MyProjectService"/>
+        <applicationService serviceImplementation="com.automation.iosccevaluator.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.automation.iosccevaluator.services.MyProjectService"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.mohagan9.iosccevaluator.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
 </idea-plugin>

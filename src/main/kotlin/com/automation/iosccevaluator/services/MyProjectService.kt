@@ -1,6 +1,6 @@
-package com.github.mohagan9.iosccevaluator.services
+package com.automation.iosccevaluator.services
 
-import com.github.mohagan9.iosccevaluator.MyBundle
+import com.automation.iosccevaluator.MyBundle
 import com.intellij.openapi.project.Project
 
 class MyProjectService(project: Project) {
