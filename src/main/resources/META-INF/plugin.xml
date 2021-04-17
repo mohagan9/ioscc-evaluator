@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.github.mohagan9.iosccevaluator</id>
+    <id>com.automation.iosccevaluator</id>
     <name>ioscc-evaluator</name>
     <vendor>mohagan9</vendor>
 
