@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.mohagan9.iosccevaluator.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.mohagan9.iosccevaluator.MyBundle
 
 class MyApplicationService {
 
