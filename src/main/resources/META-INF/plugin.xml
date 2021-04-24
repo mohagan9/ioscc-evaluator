@@ -1,14 +1,18 @@
 <idea-plugin>
     <id>com.automation.iosccevaluator</id>
-    <name>ioscc-evaluator</name>
+    <name>iOS Class Chain Evaluator</name>
     <vendor>mohagan9</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.automation.iosccevaluator.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.automation.iosccevaluator.services.MyProjectService"/>
-    </extensions>
+    <actions>
+        <action id="com.automation.iosccevaluator.actions.EvaluateClassChainAction"
+                class="com.automation.iosccevaluator.actions.EvaluateClassChainAction"
+                text="Evaluate iOS Class Chain"
+                description="Runs Appium&#39;s findElement by iOS Class Chain on the active XML file">
+            <add-to-group group-id="ToolsXmlGroup"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt C" second-keystroke="E"/>
+        </action>
+    </actions>
 </idea-plugin>
