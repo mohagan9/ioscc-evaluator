@@ -6,3 +6,11 @@ formatting:
     continuationIndentSize: 8
   ParameterListWrapping:
     indentSize: 8
+  NoWildcardImports:
+    active: false
+
+style:
+  NewLineAtEndOfFile:
+    active: false
+  WildcardImport:
+    active: false
