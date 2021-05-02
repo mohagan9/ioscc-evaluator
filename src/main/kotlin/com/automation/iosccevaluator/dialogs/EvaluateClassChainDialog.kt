@@ -2,10 +2,11 @@ package com.automation.iosccevaluator.dialogs
 
 import com.automation.iosccevaluator.actions.EvaluateAction
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.psi.xml.XmlDocument
 import java.awt.BorderLayout
 import javax.swing.*
 
-class EvaluateClassChainDialog : DialogWrapper(true) {
+class EvaluateClassChainDialog(private val xmlDocument: XmlDocument) : DialogWrapper(true) {
     init {
         init()
         title = "Evaluate iOS Class Chain"
@@ -19,6 +20,6 @@ class EvaluateClassChainDialog : DialogWrapper(true) {
     }
 
     override fun createActions(): Array<Action> {
-        return arrayOf(EvaluateAction(), cancelAction)
+        return arrayOf(EvaluateAction(xmlDocument), cancelAction)
     }
 }
