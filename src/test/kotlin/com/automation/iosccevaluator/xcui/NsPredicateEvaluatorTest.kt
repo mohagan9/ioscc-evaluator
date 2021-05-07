@@ -4,39 +4,80 @@ import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class NsPredicateEvaluatorTest {
-    companion object {
-        private lateinit var evaluator: NsPredicateEvaluator
-        private val root: XmlTag = mockk()
+    private lateinit var evaluator: NsPredicateEvaluator
+    private val root: XmlTag = mockk()
 
-        @BeforeAll
-        @JvmStatic
-        fun setup() {
-            evaluator = NsPredicateEvaluator(root)
-        }
+    @BeforeEach
+    fun setup() {
+        evaluator = NsPredicateEvaluator(root)
+        every { root.attributes } returns arrayOf()
+        every { root.children } returns arrayOf()
+    }
+
+    private fun createXmlAttributeMock(name: String, value: String): XmlAttribute {
+        val attr:XmlAttribute = mockk()
+        every { attr.name } returns name
+        every { attr.value } returns value
+        return attr
+    }
+
+    private fun createXmlTagMock(attributes: Array<XmlAttribute>): XmlTag {
+        val xmlTag: XmlTag = mockk()
+        every { xmlTag.attributes } returns attributes
+        return xmlTag
     }
 
     @Test
-    fun findBy_givenRootWithMatchingAttributeValue_returnsRoot() {
-        val attr:XmlAttribute = mockk()
-        every { attr.name } returns "type"
-        every { attr.value } returns "value"
+    fun findBy_givenRootWithMatchingAttributeNameValue_returnsRoot() {
+        val attr = createXmlAttributeMock("type", "value")
         every { root.attributes } returns arrayOf(attr)
 
-        assertTrue(arrayOf(root).contentEquals(evaluator.findBy("type == \"value\"")))
+        assertEquals(listOf(root), (evaluator.findAllBy("type == \"value\"")))
     }
 
     @Test
     fun findBy_givenRootWithNoMatchingAttributeValue_returnsEmpty() {
-        val attr:XmlAttribute = mockk()
-        every { attr.name } returns "type"
-        every { attr.value } returns "no-match"
+        val attr = createXmlAttributeMock("type", "no-match")
         every { root.attributes } returns arrayOf(attr)
 
-        assertTrue(arrayOf<XmlTag>().contentEquals(evaluator.findBy("type == \"value\"")))
+        assertEquals(listOf(), (evaluator.findAllBy("type == \"value\"")))
+    }
+
+    @Test
+    fun findBy_givenRootWithNoMatchingAttributeName_returnsEmpty() {
+        val attr = createXmlAttributeMock("no-match", "value")
+        every { root.attributes } returns arrayOf(attr)
+
+        assertEquals(listOf(), (evaluator.findAllBy("type == \"value\"")))
+    }
+
+    @Test
+    fun findBy_givenRootWithTwoPredicateMatchingNestedXmlTags_returnsBothXmlTags() {
+        val attributes = arrayOf(createXmlAttributeMock("type", "value"))
+        val children = arrayOf(
+            createXmlTagMock(attributes),
+            createXmlTagMock(attributes)
+        )
+        every { root.children } returns children
+
+        assertEquals(children.toList(), (evaluator.findAllBy("type == \"value\"")))
+    }
+
+    @Test
+    fun findBy_givenAllXmlTagsMatchPredicate_returnsAllXmlTags() {
+        val attributes = arrayOf(createXmlAttributeMock("type", "value"))
+        val children = arrayOf(
+            createXmlTagMock(attributes),
+            createXmlTagMock(attributes)
+        )
+        every { root.attributes } returns attributes
+        every { root.children } returns children
+
+        assertEquals(listOf(root, *children), (evaluator.findAllBy("type == \"value\"")))
     }
 }
