@@ -8,6 +8,8 @@ formatting:
     indentSize: 8
   NoWildcardImports:
     active: false
+  MultiLineIfElse:
+    active: false
 
 style:
   NewLineAtEndOfFile:
