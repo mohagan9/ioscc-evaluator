@@ -29,11 +29,12 @@ internal class NsPredicateEvaluatorTest {
     private fun createXmlTagMock(attributes: Array<XmlAttribute>): XmlTag {
         val xmlTag: XmlTag = mockk()
         every { xmlTag.attributes } returns attributes
+        every { xmlTag.children } returns arrayOf()
         return xmlTag
     }
 
     @Test
-    fun findBy_givenRootWithMatchingAttributeNameValue_returnsRoot() {
+    fun findAllBy_givenRootWithMatchingAttributeNameValue_returnsRoot() {
         val attr = createXmlAttributeMock("type", "value")
         every { root.attributes } returns arrayOf(attr)
 
@@ -41,7 +42,7 @@ internal class NsPredicateEvaluatorTest {
     }
 
     @Test
-    fun findBy_givenRootWithNoMatchingAttributeValue_returnsEmpty() {
+    fun findAllBy_givenRootWithNoMatchingAttributeValue_returnsEmpty() {
         val attr = createXmlAttributeMock("type", "no-match")
         every { root.attributes } returns arrayOf(attr)
 
@@ -49,7 +50,7 @@ internal class NsPredicateEvaluatorTest {
     }
 
     @Test
-    fun findBy_givenRootWithNoMatchingAttributeName_returnsEmpty() {
+    fun findAllBy_givenRootWithNoMatchingAttributeName_returnsEmpty() {
         val attr = createXmlAttributeMock("no-match", "value")
         every { root.attributes } returns arrayOf(attr)
 
@@ -57,27 +58,55 @@ internal class NsPredicateEvaluatorTest {
     }
 
     @Test
-    fun findBy_givenRootWithTwoPredicateMatchingNestedXmlTags_returnsBothXmlTags() {
+    fun findAllBy_givenRootWithTwoPredicateMatchingNestedXmlTags_returnsBothXmlTags() {
         val attributes = arrayOf(createXmlAttributeMock("type", "value"))
-        val children = arrayOf(
-            createXmlTagMock(attributes),
-            createXmlTagMock(attributes)
-        )
+        val child: XmlTag = createXmlTagMock(attributes)
+        val children = arrayOf(child, child)
         every { root.children } returns children
 
         assertEquals(children.toList(), (evaluator.findAllBy("type == \"value\"")))
     }
 
     @Test
-    fun findBy_givenAllXmlTagsMatchPredicate_returnsAllXmlTags() {
+    fun findAllBy_givenAllXmlTagsMatchPredicate_returnsAllXmlTags() {
         val attributes = arrayOf(createXmlAttributeMock("type", "value"))
-        val children = arrayOf(
-            createXmlTagMock(attributes),
-            createXmlTagMock(attributes)
-        )
+        val child: XmlTag = createXmlTagMock(attributes)
+        val children = arrayOf(child, child)
         every { root.attributes } returns attributes
         every { root.children } returns children
 
-        assertEquals(listOf(root, *children), (evaluator.findAllBy("type == \"value\"")))
+        assertEquals(listOf(*children, root), (evaluator.findAllBy("type == \"value\"")))
+    }
+    
+    @Test
+    fun findAllBy_givenSinglePredicateMatchInNestedChildren_returnsOneXmlTag() {
+        val attributes = arrayOf(createXmlAttributeMock("type", "value"))
+        val childA = createXmlTagMock(arrayOf())
+        val childB = createXmlTagMock(arrayOf())
+        val leaf = createXmlTagMock(arrayOf())
+        val matchingElement = createXmlTagMock(attributes)
+        every { childA.children } returns arrayOf(leaf, leaf)
+        every { childB.children } returns arrayOf(leaf, matchingElement)
+        every { root.children } returns arrayOf(childA, childB)
+
+        assertEquals(listOf(matchingElement), evaluator.findAllBy("type == \"value\""))
+    }
+
+    @Test
+    fun findAllBy_givenAllXmlTagsMatchPredicateForDeeplyNestedTree_returnsAllXmlTags() {
+        val attributes = arrayOf(createXmlAttributeMock("type", "value"))
+        val childLevel1 = createXmlTagMock(attributes)
+        val childLevel2 = createXmlTagMock(attributes)
+        every { root.attributes } returns attributes
+        every { root.children } returns arrayOf(childLevel1, childLevel1, childLevel1)
+        every { childLevel1.children } returns arrayOf(childLevel2, childLevel2, childLevel2, childLevel2)
+
+        assertEquals(
+            listOf(
+                *childLevel1.children, *childLevel1.children, *childLevel1.children,
+                *root.children, root
+            ),
+            evaluator.findAllBy("type == \"value\"")
+        )
     }
 }
