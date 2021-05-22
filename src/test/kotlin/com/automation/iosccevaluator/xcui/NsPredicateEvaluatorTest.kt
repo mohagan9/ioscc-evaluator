@@ -38,7 +38,7 @@ internal class NsPredicateEvaluatorTest {
         val attr = createXmlAttributeMock("type", "value")
         every { root.attributes } returns arrayOf(attr)
 
-        assertEquals(listOf(root), (evaluator.findAllBy("type == \"value\"")))
+        assertEquals(listOf(root), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -46,7 +46,7 @@ internal class NsPredicateEvaluatorTest {
         val attr = createXmlAttributeMock("type", "no-match")
         every { root.attributes } returns arrayOf(attr)
 
-        assertEquals(listOf(), (evaluator.findAllBy("type == \"value\"")))
+        assertEquals(listOf(), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -54,7 +54,7 @@ internal class NsPredicateEvaluatorTest {
         val attr = createXmlAttributeMock("no-match", "value")
         every { root.attributes } returns arrayOf(attr)
 
-        assertEquals(listOf(), (evaluator.findAllBy("type == \"value\"")))
+        assertEquals(listOf(), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -64,7 +64,7 @@ internal class NsPredicateEvaluatorTest {
         val children = arrayOf(child, child)
         every { root.children } returns children
 
-        assertEquals(children.toList(), (evaluator.findAllBy("type == \"value\"")))
+        assertEquals(children.toList(), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -75,7 +75,7 @@ internal class NsPredicateEvaluatorTest {
         every { root.attributes } returns attributes
         every { root.children } returns children
 
-        assertEquals(listOf(*children, root), (evaluator.findAllBy("type == \"value\"")))
+        assertEquals(listOf(*children, root), evaluator.findAllBy("type == \"value\""))
     }
     
     @Test
@@ -108,5 +108,16 @@ internal class NsPredicateEvaluatorTest {
             ),
             evaluator.findAllBy("type == \"value\"")
         )
+    }
+
+    @Test
+    fun findAllBy_givenPredicateWithStringValueContainingPredicate_returnsCorrectXmlTags() {
+        val child: XmlTag = createXmlTagMock(
+            arrayOf(createXmlAttributeMock("type", "name == \"test\""))
+        )
+        every { root.attributes } returns arrayOf(createXmlAttributeMock("name", "test"))
+        every { root.children } returns arrayOf(child)
+
+        assertEquals(listOf(child), evaluator.findAllBy("type == \"name == \"test\"\""))
     }
 }
