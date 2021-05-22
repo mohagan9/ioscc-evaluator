@@ -34,9 +34,25 @@ class NsPredicateEvaluator(private val root: XmlTag?) {
     }
 
     private fun isMatch(nsPredicate: String, xmlTag: XmlTag): Boolean {
-        return xmlTag.attributes.any { attr ->
-                attr.name == getAttributeName(nsPredicate) &&
-                attr.value == getAttributeValue(nsPredicate)
+        val splitByAnd = nsPredicate.split(" and ", ignoreCase = true)
+        if (splitByAnd.size > 1) {
+            for (andCondition in splitByAnd) {
+                if (!xmlTag.attributes.any { attr ->
+                        attr.name == getAttributeName(andCondition) &&
+                        attr.value == getAttributeValue(andCondition)
+                    }) return false
             }
+            return true
+        } else {
+            val splitByOr = nsPredicate.split(" or ", ignoreCase = true)
+            var isMatch = false
+            for(orCondition in splitByOr) {
+                if (xmlTag.attributes.any { attr ->
+                        attr.name == getAttributeName(orCondition) &&
+                        attr.value == getAttributeValue(orCondition)
+                    }) isMatch = true
+            }
+            return isMatch
+        }
     }
 }

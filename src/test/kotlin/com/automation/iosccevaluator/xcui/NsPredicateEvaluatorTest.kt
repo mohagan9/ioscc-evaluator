@@ -120,4 +120,37 @@ internal class NsPredicateEvaluatorTest {
 
         assertEquals(listOf(child), evaluator.findAllBy("type == \"name == \"test\"\""))
     }
+
+    @Test
+    fun findAllBy_givenPredicateWithAllAndConditionsMatching_returnsMatchingXmlTag() {
+        every { root.attributes } returns arrayOf(
+            createXmlAttributeMock("type", "value"),
+            createXmlAttributeMock("name", "test"),
+            createXmlAttributeMock("color", "blue")
+        )
+
+        assertEquals(listOf(root), evaluator.findAllBy("type == \"value\" and name == \"test\" AND color == \"blue\""))
+    }
+
+    @Test
+    fun findAllBy_givenPredicateWithSingleAndConditionNotMatching_returnsEmpty() {
+        every { root.attributes } returns arrayOf(
+            createXmlAttributeMock("type", "value"),
+            createXmlAttributeMock("name", "test"),
+            createXmlAttributeMock("color", "blue")
+        )
+
+        assertEquals(listOf(), evaluator.findAllBy("type == \"value\" and name == \"test\" AND color == \"green\""))
+    }
+
+    @Test
+    fun findAllBy_givenPredicateWithSingleOrConditionMatching_returnsMatchingXmlTag() {
+        every { root.attributes } returns arrayOf(
+            createXmlAttributeMock("type", "value"),
+            createXmlAttributeMock("name", "test"),
+            createXmlAttributeMock("color", "blue")
+        )
+
+        assertEquals(listOf(root), evaluator.findAllBy("type == \"string\" OR name == \"bob\" or color == \"blue\""))
+    }
 }
