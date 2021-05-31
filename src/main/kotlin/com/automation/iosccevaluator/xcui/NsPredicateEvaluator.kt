@@ -12,7 +12,7 @@ class NsPredicateEvaluator(private val root: XmlTag?) {
         val matches: MutableList<XmlTag> = mutableListOf()
         matches += findMatchingChildren(nsPredicate, root)
 
-        if (isMatch(nsPredicate, root))
+        if (isOrMatch(nsPredicate, root))
             matches += root
 
         return matches
@@ -28,31 +28,42 @@ class NsPredicateEvaluator(private val root: XmlTag?) {
             }
         matchingChildren += parent.children
             .filterIsInstance<XmlTag>()
-            .filter { child -> isMatch(nsPredicate, child) }
+            .filter { child -> isOrMatch(nsPredicate, child) }
 
         return matchingChildren
     }
 
-    private fun isMatch(nsPredicate: String, xmlTag: XmlTag): Boolean {
-        val splitByAnd = nsPredicate.split(" and ", ignoreCase = true)
-        if (splitByAnd.size > 1) {
-            for (andCondition in splitByAnd) {
-                if (!xmlTag.attributes.any { attr ->
-                        attr.name == getAttributeName(andCondition) &&
-                        attr.value == getAttributeValue(andCondition)
-                    }) return false
-            }
+    private fun isOrMatch(statement: String, xmlTag: XmlTag): Boolean {
+        val splitByOr = statement.split(" or ", ignoreCase = true)
+        var isMatch = false
+        if (splitByOr.size < 3) {
+            for (orCondition in splitByOr)
+                if (isAndMatch(orCondition, xmlTag)) isMatch = true
+
+        } else for (orCondition in splitByOr)
+                if (isOrMatch(orCondition, xmlTag)) isMatch = true
+
+        return isMatch
+    }
+
+    private fun isAndMatch(statement: String, xmlTag: XmlTag): Boolean {
+        val splitByAnd = statement.split(" and ", ignoreCase = true)
+        if (splitByAnd.size < 3) {
+            for (andCondition in splitByAnd)
+                if (!isAttributeMatch(andCondition, xmlTag)) return false
+
             return true
-        } else {
-            val splitByOr = nsPredicate.split(" or ", ignoreCase = true)
-            var isMatch = false
-            for(orCondition in splitByOr) {
-                if (xmlTag.attributes.any { attr ->
-                        attr.name == getAttributeName(orCondition) &&
-                        attr.value == getAttributeValue(orCondition)
-                    }) isMatch = true
-            }
-            return isMatch
+        }
+        for (andCondition in splitByAnd)
+         if (!isAndMatch(andCondition, xmlTag)) return false
+
+        return true
+    }
+
+    private fun isAttributeMatch(condition: String, xmlTag: XmlTag): Boolean {
+        return xmlTag.attributes.any { attr ->
+            attr.name == getAttributeName(condition) &&
+            attr.value == getAttributeValue(condition)
         }
     }
 }

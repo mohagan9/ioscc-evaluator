@@ -153,4 +153,15 @@ internal class NsPredicateEvaluatorTest {
 
         assertEquals(listOf(root), evaluator.findAllBy("type == \"string\" OR name == \"bob\" or color == \"blue\""))
     }
+
+    @Test
+    fun findAllBy_givenPredicateWithAndOrConditions_returnsMatchingXmlTag() {
+        every { root.attributes } returns arrayOf(
+            createXmlAttributeMock("type", "value"),
+            createXmlAttributeMock("name", "test"),
+            createXmlAttributeMock("color", "blue")
+        )
+
+        assertEquals(listOf(root), evaluator.findAllBy("age == \"value\" OR name == \"test\" AND color == \"blue\""))
+    }
 }
