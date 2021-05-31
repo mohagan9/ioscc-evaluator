@@ -1,7 +1,6 @@
 package com.automation.iosccevaluator.xcui
 
-import com.automation.iosccevaluator.xcui.NsPredicateParser.getAttributeName
-import com.automation.iosccevaluator.xcui.NsPredicateParser.getAttributeValue
+import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
 import com.intellij.psi.xml.XmlTag
 
 class NsPredicateEvaluator(private val root: XmlTag?) {
@@ -54,12 +53,5 @@ class NsPredicateEvaluator(private val root: XmlTag?) {
             if (!isAndMatch(andCondition, xmlTag)) return false
 
         return true
-    }
-
-    private fun isAttributeMatch(condition: String, xmlTag: XmlTag): Boolean {
-        return xmlTag.attributes.any { attr ->
-            attr.name == getAttributeName(condition) &&
-            attr.value == getAttributeValue(condition)
-        }
     }
 }
