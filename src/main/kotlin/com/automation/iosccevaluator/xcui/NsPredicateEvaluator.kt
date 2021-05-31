@@ -36,10 +36,9 @@ class NsPredicateEvaluator(private val root: XmlTag?) {
     private fun isOrMatch(statement: String, xmlTag: XmlTag): Boolean {
         val splitByOr = statement.split(" or ", ignoreCase = true)
         var isMatch = false
-        if (splitByOr.size < 3) {
+        if (splitByOr.size <= 2) {
             for (orCondition in splitByOr)
                 if (isAndMatch(orCondition, xmlTag)) isMatch = true
-
         } else for (orCondition in splitByOr)
                 if (isOrMatch(orCondition, xmlTag)) isMatch = true
 
@@ -48,14 +47,11 @@ class NsPredicateEvaluator(private val root: XmlTag?) {
 
     private fun isAndMatch(statement: String, xmlTag: XmlTag): Boolean {
         val splitByAnd = statement.split(" and ", ignoreCase = true)
-        if (splitByAnd.size < 3) {
+        if (splitByAnd.size <= 2) {
             for (andCondition in splitByAnd)
                 if (!isAttributeMatch(andCondition, xmlTag)) return false
-
-            return true
-        }
-        for (andCondition in splitByAnd)
-         if (!isAndMatch(andCondition, xmlTag)) return false
+        } else for (andCondition in splitByAnd)
+            if (!isAndMatch(andCondition, xmlTag)) return false
 
         return true
     }

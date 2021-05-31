@@ -20,7 +20,7 @@ internal class NsPredicateEvaluatorTest {
     }
 
     private fun createXmlAttributeMock(name: String, value: String): XmlAttribute {
-        val attr:XmlAttribute = mockk()
+        val attr: XmlAttribute = mockk()
         every { attr.name } returns name
         every { attr.value } returns value
         return attr
@@ -77,7 +77,7 @@ internal class NsPredicateEvaluatorTest {
 
         assertEquals(listOf(*children, root), evaluator.findAllBy("type == \"value\""))
     }
-    
+
     @Test
     fun findAllBy_givenSinglePredicateMatchInNestedChildren_returnsOneXmlTag() {
         val attributes = arrayOf(createXmlAttributeMock("type", "value"))

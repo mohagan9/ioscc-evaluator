@@ -16,5 +16,8 @@ formatting:
 style:
   NewLineAtEndOfFile:
     active: false
+  ReturnCount:
+    active: true
+    max: 3
   WildcardImport:
     active: false
