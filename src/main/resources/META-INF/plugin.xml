@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.automation.iosccevaluator</id>
     <name>iOS Class Chain Evaluator</name>
-    <vendor>mohagan9</vendor>
+    <vendor>automation</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
