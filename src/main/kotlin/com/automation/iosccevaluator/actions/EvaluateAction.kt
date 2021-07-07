@@ -1,7 +1,7 @@
 package com.automation.iosccevaluator.actions
 
 import com.automation.iosccevaluator.dialogs.ResultDialog
-import com.automation.iosccevaluator.xcui.NsPredicateEvaluator
+import com.automation.iosccevaluator.xcui.ClassChainEvaluator
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.psi.xml.XmlDocument
 import java.awt.event.ActionEvent
@@ -16,7 +16,7 @@ class EvaluateAction(private val xmlDocument: XmlDocument) : AbstractAction("Eva
 
     override fun actionPerformed(e: ActionEvent?) {
         ResultDialog(
-            NsPredicateEvaluator(xmlDocument.rootTag)
+            ClassChainEvaluator(xmlDocument.rootTag)
                 .findAllBy(expression)
                 .size
         ).show()
