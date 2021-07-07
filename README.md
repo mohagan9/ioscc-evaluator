@@ -10,22 +10,29 @@
 
 Similar to *Evaluate XPath...* but for Appium's iOS Class Chains.
 
-Currently iOS Predicates are supported with the following operators:
-* AND
-* OR
-* ==
-* !=
-
-#### Usage Instructions ####
+---
+### Usage Instructions ###
 
 1. Open an XML document with XCUI Elements
 1. Go to Tools > XML Actions > Evaluate iOS Class Chain (Ctrl+Alt+C, E)
-2. Enter a predicate into the text box, and evaluate
+2. Enter a query into the text box, and evaluate
 3. See number of matching results
+
+<b>Note:</b> If you want to run iOS Predicates, then wrap your query in <b>$</b>
+
+---
+### Supported Class Chain Query Construction Rules ###
+ * <kbd>XCUIElement</kbd> Direct children
+ * <kbd>**/XCUIElement</kbd> Descendant children
+
+### Supported Predicate Operators ###
+* AND, OR
+* ==, !=
 
 <!-- Plugin description end -->
 
-## Installation
+---
+### Installation
 
 - Using IDE built-in plugin system:
   
