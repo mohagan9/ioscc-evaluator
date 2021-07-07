@@ -74,7 +74,7 @@ internal class ClassChainEvaluatorTest {
     }
 
     @Test
-    fun findAllBy_givenRootWithNestedChildren_withNestedChildrenMatchOnSelectAllDirectChildrenQuery_returnsOnlyNestedChildren() {
+    fun findAllBy_givenRootWithNestedChildren_whenMatchOnSelectAllDirectChildrenQuery_returnsOnlyNestedChildren() {
         val childType = "CHILD_TYPE"
         val child1 = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", xcuiElementType)
@@ -104,7 +104,7 @@ internal class ClassChainEvaluatorTest {
     }
 
     @Test
-    fun findAllBy_givenRootWithAllMatchingNestedChildren_withMatchOnSelectAllChildrenQuery_returnsAllChildren() {
+    fun findAllBy_givenRootWithMatchOnSelectAllChildrenQuery_returnsAllChildren() {
         val child1 = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", rootType)
         ))
@@ -127,6 +127,9 @@ internal class ClassChainEvaluatorTest {
         every { child2.children } returns arrayOf(nestedChild2)
         every { child3.children } returns arrayOf(nestedChild3)
         every { root.children } returns arrayOf(child1, child2, child3)
-        assertEquals(listOf(nestedChild1, nestedChild2, nestedChild3, child1, child2, root), evaluator.findAllBy("**/$rootType"))
+        assertEquals(
+            listOf(nestedChild1, nestedChild2, nestedChild3, child1, child2, root),
+            evaluator.findAllBy("**/$rootType")
+        )
     }
 }
