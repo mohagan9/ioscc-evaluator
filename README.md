@@ -1,8 +1,8 @@
 # ioscc-evaluator
 
 ![Build](https://github.com/mohagan9/ioscc-evaluator/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/17047)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/17047)
+[![Version](https://img.shields.io/jetbrains/plugin/v/17047.svg)](https://plugins.jetbrains.com/plugin/17047)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/17047.svg)](https://plugins.jetbrains.com/plugin/17047)
 ![Code Quality](https://www.code-inspector.com/project/21797/score/svg)
 
 <!-- Plugin description -->
