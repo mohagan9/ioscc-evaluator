@@ -3,9 +3,9 @@ package com.automation.iosccevaluator.xcui
 import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
 import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlAttributeMock
 import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlTagMock
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 internal class AttributeEvaluatorTest {
     @Test

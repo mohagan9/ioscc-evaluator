@@ -5,9 +5,9 @@ import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlTagMo
 import com.intellij.psi.xml.XmlTag
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 internal class NsPredicateEvaluatorTest {
     private lateinit var evaluator: NsPredicateEvaluator
@@ -33,7 +33,7 @@ internal class NsPredicateEvaluatorTest {
         val attr = createXmlAttributeMock("type", "no-match")
         every { root.attributes } returns arrayOf(attr)
 
-        assertEquals(listOf(), evaluator.findAllBy("type == \"value\""))
+        assertEquals(listOf<XmlTag>(), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -41,7 +41,7 @@ internal class NsPredicateEvaluatorTest {
         val attr = createXmlAttributeMock("no-match", "value")
         every { root.attributes } returns arrayOf(attr)
 
-        assertEquals(listOf(), evaluator.findAllBy("type == \"value\""))
+        assertEquals(listOf<XmlTag>(), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -127,7 +127,7 @@ internal class NsPredicateEvaluatorTest {
             createXmlAttributeMock("color", "blue")
         )
 
-        assertEquals(listOf(), evaluator.findAllBy("type == \"value\" and name == \"test\" AND color == \"green\""))
+        assertEquals(listOf<XmlTag>(), evaluator.findAllBy("type == \"value\" and name == \"test\" AND color == \"green\""))
     }
 
     @Test
