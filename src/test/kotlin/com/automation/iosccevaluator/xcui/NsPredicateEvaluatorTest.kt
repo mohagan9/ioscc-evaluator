@@ -127,7 +127,10 @@ internal class NsPredicateEvaluatorTest {
             createXmlAttributeMock("color", "blue")
         )
 
-        assertEquals(listOf<XmlTag>(), evaluator.findAllBy("type == \"value\" and name == \"test\" AND color == \"green\""))
+        assertEquals(
+            listOf<XmlTag>(),
+            evaluator.findAllBy("type == \"value\" and name == \"test\" AND color == \"green\"")
+        )
     }
 
     @Test
