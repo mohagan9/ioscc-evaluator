@@ -66,17 +66,17 @@ detekt {
 }
 
 tasks {
-    // Set the compatibility versions to 14
+    // Set the compatibility versions to 1.8
     withType<JavaCompile> {
-        sourceCompatibility = "14"
-        targetCompatibility = "14"
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
     }
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "14"
+        kotlinOptions.jvmTarget = "1.8"
     }
 
     withType<Detekt> {
-        jvmTarget = "14"
+        jvmTarget = "1.8"
     }
 
     patchPluginXml {
@@ -120,9 +120,9 @@ tasks {
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
-    jvmTarget = "14"
+    jvmTarget = "1.8"
 }
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
-    jvmTarget = "14"
+    jvmTarget = "1.8"
 }
