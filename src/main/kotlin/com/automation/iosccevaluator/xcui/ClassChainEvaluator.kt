@@ -1,6 +1,7 @@
 package com.automation.iosccevaluator.xcui
 
 import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
+import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
 import com.intellij.psi.xml.XmlTag
 
 class ClassChainEvaluator(private val root: XmlTag?) {
@@ -29,16 +30,16 @@ class ClassChainEvaluator(private val root: XmlTag?) {
     }
 
     private fun findDirectMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {
+        val type = query.substringBefore('[')
+        val filter = query.substringAfter('[', "").substringBefore(']', "")
         val matchingChildren = mutableListOf<XmlTag>()
         parent.children
             .filterIsInstance<XmlTag>()
             .forEach { child: XmlTag ->
-                if (isAttributeMatch("type == \"$query\"", child))
+                if (isAttributeMatch("type == \"$type\"", child))
                     matchingChildren += child
-                else
-                    matchingChildren += findDirectMatchingChildren(query, child)
             }
-        return matchingChildren
+        return select(filter, matchingChildren)
     }
 
     private fun findMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {

@@ -70,28 +70,7 @@ internal class ClassChainEvaluatorTest {
         every { child2.children } returns arrayOf(nestedChild2)
         every { child3.children } returns arrayOf(nestedChild3)
         every { root.children } returns arrayOf(child1, child2, child3)
-        assertEquals(listOf(child1, child2, nestedChild3), evaluator.findAllBy(xcuiElementType))
-    }
-
-    @Test
-    fun findAllBy_givenRootWithNestedChildren_whenMatchOnSelectAllDirectChildrenQuery_returnsOnlyNestedChildren() {
-        val childType = "CHILD_TYPE"
-        val child1 = createXmlTagMock(arrayOf(
-            createXmlAttributeMock("type", xcuiElementType)
-        ))
-        val child2 = createXmlTagMock(arrayOf(
-            createXmlAttributeMock("type", xcuiElementType)
-        ))
-        val nestedChild1 = createXmlTagMock(arrayOf(
-            createXmlAttributeMock("type", childType)
-        ))
-        val nestedChild2 = createXmlTagMock(arrayOf(
-            createXmlAttributeMock("type", childType)
-        ))
-        every { child1.children } returns arrayOf(nestedChild1)
-        every { child2.children } returns arrayOf(nestedChild2)
-        every { root.children } returns arrayOf(child1, child2)
-        assertEquals(listOf(nestedChild1, nestedChild2), evaluator.findAllBy(childType))
+        assertEquals(listOf(child1, child2), evaluator.findAllBy(xcuiElementType))
     }
 
     @Test
@@ -131,5 +110,22 @@ internal class ClassChainEvaluatorTest {
             listOf(nestedChild1, nestedChild2, nestedChild3, child1, child2, root),
             evaluator.findAllBy("**/$rootType")
         )
+    }
+
+    @Test
+    fun findAllBy_givenRootWithChildren_whenMatchOnSelectNthDirectChildrenQuery_returnsOnlyMatchingChild() {
+        val child1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val child2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val child3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        every { root.children } returns arrayOf(child1, child2, child3)
+        assertEquals(listOf(child1), evaluator.findAllBy("$xcuiElementType[1]"))
+        assertEquals(listOf(child2), evaluator.findAllBy("$xcuiElementType[2]"))
+        assertEquals(listOf(child3), evaluator.findAllBy("$xcuiElementType[3]"))
     }
 }
