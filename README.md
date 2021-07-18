@@ -24,6 +24,7 @@ Similar to *Evaluate XPath...* but for Appium's iOS Class Chains.
 ### Supported Class Chain Query Construction Rules ###
  * <kbd>XCUIElement</kbd> Direct children
  * <kbd>**/XCUIElement</kbd> Descendant children
+ * <kbd>XCUIElement[2]</kbd> Nth child
 
 ### Supported Predicate Operators ###
 * AND, OR

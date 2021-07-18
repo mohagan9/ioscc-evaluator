@@ -1,6 +1,8 @@
 package com.automation.iosccevaluator.actions
 
+import com.automation.iosccevaluator.dialogs.ErrorDialog
 import com.automation.iosccevaluator.dialogs.ResultDialog
+import com.automation.iosccevaluator.exceptions.InvalidClassChainExpressionException
 import com.automation.iosccevaluator.xcui.ClassChainEvaluator
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.psi.xml.XmlDocument
@@ -15,10 +17,14 @@ class EvaluateAction(private val xmlDocument: XmlDocument) : AbstractAction("Eva
     }
 
     override fun actionPerformed(e: ActionEvent?) {
-        ResultDialog(
-            ClassChainEvaluator(xmlDocument.rootTag)
-                .findAllBy(expression)
-                .size
-        ).show()
+        try {
+            ResultDialog(
+                ClassChainEvaluator(xmlDocument.rootTag)
+                    .findAllBy(expression)
+                    .size
+            ).show()
+        } catch (e: InvalidClassChainExpressionException) {
+            ErrorDialog(e.message!!).show()
+        }
     }
 }
