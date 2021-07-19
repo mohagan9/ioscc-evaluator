@@ -8,7 +8,7 @@ import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-class EvaluateClassChainDialog(private val xmlDocument: XmlDocument) : DialogWrapper(true) {
+class EvaluateClassChainDialog(xmlDocument: XmlDocument) : DialogWrapper(true) {
     private val expressionField = JTextField()
     private val evaluateAction = EvaluateAction(xmlDocument)
 

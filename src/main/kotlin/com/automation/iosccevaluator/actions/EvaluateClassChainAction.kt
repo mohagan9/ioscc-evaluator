@@ -9,8 +9,7 @@ import com.intellij.psi.xml.XmlFile
 class EvaluateClassChainAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val xmlDoc = (e.getData(CommonDataKeys.PSI_FILE) as XmlFile).document
-        if (xmlDoc != null) {
+        if (xmlDoc != null)
             EvaluateClassChainDialog(xmlDoc).show()
-        }
     }
 }

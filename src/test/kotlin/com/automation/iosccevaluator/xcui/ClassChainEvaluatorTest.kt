@@ -93,7 +93,10 @@ internal class ClassChainEvaluatorTest {
         val child3 = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", "NO_MATCH")
         ))
-        val nestedChild1 = createXmlTagMock(arrayOf(
+        val nestedChild1a = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType)
+        ))
+        val nestedChild1b = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", rootType)
         ))
         val nestedChild2 = createXmlTagMock(arrayOf(
@@ -102,12 +105,12 @@ internal class ClassChainEvaluatorTest {
         val nestedChild3 = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", rootType)
         ))
-        every { child1.children } returns arrayOf(nestedChild1)
+        every { child1.children } returns arrayOf(nestedChild1a, nestedChild1b)
         every { child2.children } returns arrayOf(nestedChild2)
         every { child3.children } returns arrayOf(nestedChild3)
         every { root.children } returns arrayOf(child1, child2, child3)
         assertEquals(
-            listOf(nestedChild1, nestedChild2, nestedChild3, child1, child2, root),
+            listOf(root, child1, nestedChild1a, nestedChild1b, child2, nestedChild2, nestedChild3),
             evaluator.findAllBy("**/$rootType")
         )
     }

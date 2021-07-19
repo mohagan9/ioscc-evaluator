@@ -18,13 +18,13 @@ class ClassChainEvaluator(private val root: XmlTag?) {
         val isDescendantChildQuery = query.subSequence(0, descendantSelector.length) == descendantSelector
         val trimmedQuery = query.removePrefix(descendantSelector)
 
+        if (isAttributeMatch("type == \"$trimmedQuery\"", root))
+            matches += root
+
         matches += if (isDescendantChildQuery)
             findMatchingChildren(trimmedQuery, root)
         else
             findDirectMatchingChildren(trimmedQuery, root)
-
-        if (isAttributeMatch("type == \"$trimmedQuery\"", root))
-            matches += root
 
         return matches
     }
@@ -46,12 +46,11 @@ class ClassChainEvaluator(private val root: XmlTag?) {
         val matchingChildren = mutableListOf<XmlTag>()
         parent.children
             .filterIsInstance<XmlTag>()
-            .forEach { child: XmlTag ->
+            .forEach { child ->
+                if (isAttributeMatch("type == \"$query\"", child))
+                    matchingChildren += child
                 matchingChildren += findMatchingChildren(query, child)
             }
-        matchingChildren += parent.children
-            .filterIsInstance<XmlTag>()
-            .filter { child -> isAttributeMatch("type == \"$query\"", child) }
         return matchingChildren
     }
 }

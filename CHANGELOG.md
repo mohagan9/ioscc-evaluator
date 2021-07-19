@@ -3,6 +3,6 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
-## [0.2.1.1]
+## [0.2.1]
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- <kbd>XCUIElement[2]</kbd> Nth child support
