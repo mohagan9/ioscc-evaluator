@@ -3,6 +3,7 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
+## [0.2.2]
 ## [0.2.1]
 ### Added
 - <kbd>XCUIElement[2]</kbd> Nth child support
