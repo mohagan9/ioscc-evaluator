@@ -17,4 +17,10 @@ object SelectorEvaluator {
             throw InvalidClassChainExpressionException("'$filter' is not a valid selector expression.")
         }
     }
+
+    fun parseFilter(query: String): String {
+        return query
+            .substringAfter('[', "")
+            .substringBefore(']', "")
+    }
 }

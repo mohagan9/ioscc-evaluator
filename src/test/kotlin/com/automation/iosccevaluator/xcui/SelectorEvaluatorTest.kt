@@ -1,6 +1,7 @@
 package com.automation.iosccevaluator.xcui
 
 import com.automation.iosccevaluator.exceptions.InvalidClassChainExpressionException
+import com.automation.iosccevaluator.xcui.SelectorEvaluator.parseFilter
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
 import com.intellij.psi.xml.XmlTag
 import io.mockk.mockk
@@ -40,5 +41,19 @@ internal class SelectorEvaluatorTest {
     fun select_givenAnEmptyFilter_returnsTheCollection() {
         val collection = listOf(mockk<XmlTag>())
         assertEquals(collection, select("", collection))
+    }
+
+    @Test
+    fun parseFilter_givenAStringWithValidSelector_returnsTheFilter() {
+        val filter = "FILTER"
+        assertEquals(filter, parseFilter("**/ELEMENT[$filter]"))
+    }
+
+    @Test
+    fun parseFilter_givenAStringWithInvalidSelector_returnsEmptyString() {
+        val filter = "FILTER"
+        assertEquals("", parseFilter("**/ELEMENT[$filter"))
+        assertEquals("", parseFilter("**/ELEMENT$filter]"))
+        assertEquals("", parseFilter(filter))
     }
 }

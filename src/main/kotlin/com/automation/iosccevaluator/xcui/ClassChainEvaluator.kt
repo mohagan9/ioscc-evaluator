@@ -1,6 +1,7 @@
 package com.automation.iosccevaluator.xcui
 
 import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
+import com.automation.iosccevaluator.xcui.SelectorEvaluator.parseFilter
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
 import com.intellij.psi.xml.XmlTag
 
@@ -17,9 +18,11 @@ class ClassChainEvaluator(private val root: XmlTag?) {
 
         val isDescendantChildQuery = query.subSequence(0, descendantSelector.length) == descendantSelector
         val trimmedQuery = query.removePrefix(descendantSelector)
+        val type = trimmedQuery.substringBefore('[')
+        val filter = parseFilter(trimmedQuery)
 
-        if (isAttributeMatch("type == \"$trimmedQuery\"", root))
-            matches += root
+        if (isAttributeMatch("type == \"$type\"", root))
+            matches += select(filter, listOf(root))
 
         matches += if (isDescendantChildQuery)
             findMatchingChildren(trimmedQuery, root)
@@ -31,7 +34,7 @@ class ClassChainEvaluator(private val root: XmlTag?) {
 
     private fun findDirectMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {
         val type = query.substringBefore('[')
-        val filter = query.substringAfter('[', "").substringBefore(']', "")
+        val filter = parseFilter(query)
         val matchingChildren = mutableListOf<XmlTag>()
         parent.children
             .filterIsInstance<XmlTag>()
@@ -43,11 +46,17 @@ class ClassChainEvaluator(private val root: XmlTag?) {
     }
 
     private fun findMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {
+        val type = query.substringBefore('[')
+        val filter = parseFilter(query)
+        val filteredChildren = select(filter, parent.children
+            .filterIsInstance<XmlTag>()
+            .filter { child -> isAttributeMatch("type == \"$type\"", child) }
+        )
         val matchingChildren = mutableListOf<XmlTag>()
         parent.children
             .filterIsInstance<XmlTag>()
             .forEach { child ->
-                if (isAttributeMatch("type == \"$query\"", child))
+                if (child in filteredChildren)
                     matchingChildren += child
                 matchingChildren += findMatchingChildren(query, child)
             }
