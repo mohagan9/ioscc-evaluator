@@ -4,5 +4,6 @@
 
 ## [Unreleased]
 ## [0.3.0]
+## [0.3.0]
 ### Added
 * <kbd>XCUIElement[$name == "Alice"$]</kbd> Descendant children by predicate
