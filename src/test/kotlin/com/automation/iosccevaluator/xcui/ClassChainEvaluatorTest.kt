@@ -167,4 +167,74 @@ internal class ClassChainEvaluatorTest {
             listOf(nestedChild1b, child2), evaluator.findAllBy("**/$rootType[2]")
         )
     }
+
+    @Test
+    fun findAllBy_givenMatchOnSelectAllDirectChildrenByPredicateQuery_returnsMatchingParent() {
+        val child1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val child2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val child3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NO_MATCH")
+        ))
+        val nestedChild1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NO_MATCH"),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType),
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        val nestedChild3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        every { child1.children } returns arrayOf(nestedChild1)
+        every { child2.children } returns arrayOf(nestedChild2)
+        every { child3.children } returns arrayOf(nestedChild3)
+        every { root.children } returns arrayOf(child1, child2, child3)
+        assertEquals(listOf(child1), evaluator.findAllBy("$xcuiElementType[\$color == \"RED\"\$]"))
+    }
+
+    @Test
+    fun findAllBy_givenRootWithMatchOnSelectAllChildrenByPredicateQuery_returnsAllMatchingParents() {
+        val child1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val child2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType),
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        val child3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NO_MATCH"),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild1a = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild1b = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", rootType),
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        every { child1.children } returns arrayOf(nestedChild1a, nestedChild1b)
+        every { child2.children } returns arrayOf(nestedChild2)
+        every { child3.children } returns arrayOf(nestedChild3)
+        every { root.children } returns arrayOf(child1, child2, child3)
+        assertEquals(
+            listOf(root, child1, child2),
+            evaluator.findAllBy("**/$rootType[\$color == \"RED\"\$]")
+        )
+    }
 }

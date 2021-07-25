@@ -47,8 +47,9 @@ internal class NsPredicateEvaluatorTest {
     @Test
     fun findAllBy_givenRootWithTwoPredicateMatchingNestedXmlTags_returnsBothXmlTags() {
         val attributes = arrayOf(createXmlAttributeMock("type", "value"))
-        val child: XmlTag = createXmlTagMock(attributes)
-        val children = arrayOf(child, child)
+        val child1: XmlTag = createXmlTagMock(attributes)
+        val child2: XmlTag = createXmlTagMock(attributes)
+        val children = arrayOf(child1, child2)
         every { root.children } returns children
 
         assertEquals(children.toList(), evaluator.findAllBy("type == \"value\""))
@@ -57,12 +58,13 @@ internal class NsPredicateEvaluatorTest {
     @Test
     fun findAllBy_givenAllXmlTagsMatchPredicate_returnsAllXmlTags() {
         val attributes = arrayOf(createXmlAttributeMock("type", "value"))
-        val child: XmlTag = createXmlTagMock(attributes)
-        val children = arrayOf(child, child)
+        val child1: XmlTag = createXmlTagMock(attributes)
+        val child2: XmlTag = createXmlTagMock(attributes)
+        val children = arrayOf(child1, child2)
         every { root.attributes } returns attributes
         every { root.children } returns children
 
-        assertEquals(listOf(*children, root), evaluator.findAllBy("type == \"value\""))
+        assertEquals(listOf(root, child1, child2), evaluator.findAllBy("type == \"value\""))
     }
 
     @Test
@@ -82,16 +84,22 @@ internal class NsPredicateEvaluatorTest {
     @Test
     fun findAllBy_givenAllXmlTagsMatchPredicateForDeeplyNestedTree_returnsAllXmlTags() {
         val attributes = arrayOf(createXmlAttributeMock("type", "value"))
-        val childLevel1 = createXmlTagMock(attributes)
-        val childLevel2 = createXmlTagMock(attributes)
+        val childLevel1a = createXmlTagMock(attributes)
+        val childLevel1b = createXmlTagMock(attributes)
+        val childLevel1c = createXmlTagMock(attributes)
+        val childLevel2a = createXmlTagMock(attributes)
+        val childLevel2b = createXmlTagMock(attributes)
+        val childLevel2c = createXmlTagMock(attributes)
+        val childLevel2d = createXmlTagMock(attributes)
         every { root.attributes } returns attributes
-        every { root.children } returns arrayOf(childLevel1, childLevel1, childLevel1)
-        every { childLevel1.children } returns arrayOf(childLevel2, childLevel2, childLevel2, childLevel2)
+        every { root.children } returns arrayOf(childLevel1a, childLevel1b, childLevel1c)
+        every { childLevel1a.children } returns arrayOf(childLevel2a, childLevel2b, childLevel2c, childLevel2d)
 
         assertEquals(
             listOf(
-                *childLevel1.children, *childLevel1.children, *childLevel1.children,
-                *root.children, root
+                root, childLevel1a, *childLevel1a.children,
+                childLevel1b, *childLevel1b.children,
+                childLevel1c, *childLevel1c.children
             ),
             evaluator.findAllBy("type == \"value\"")
         )

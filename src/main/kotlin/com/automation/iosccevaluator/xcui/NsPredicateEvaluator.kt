@@ -2,33 +2,31 @@ package com.automation.iosccevaluator.xcui
 
 import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.containers.OrderedSet
 
 class NsPredicateEvaluator(private val root: XmlTag?) {
-    fun findAllBy(nsPredicate: String): List<XmlTag> {
+    fun findAllBy(nsPredicate: String): OrderedSet<XmlTag> {
+        val matches = OrderedSet<XmlTag>()
         if (root == null)
-            return mutableListOf()
-
-        val matches: MutableList<XmlTag> = mutableListOf()
-        matches += findMatchingChildren(nsPredicate, root)
+            return matches
 
         if (isOrMatch(nsPredicate, root))
             matches += root
 
+        matches += findMatchingChildren(nsPredicate, root)
         return matches
     }
 
-    private fun findMatchingChildren(nsPredicate: String, parent: XmlTag): List<XmlTag> {
-        val matchingChildren: MutableList<XmlTag> = mutableListOf()
-
+    private fun findMatchingChildren(nsPredicate: String, parent: XmlTag): OrderedSet<XmlTag> {
+        val matchingChildren = OrderedSet<XmlTag>()
         parent.children
             .filterIsInstance<XmlTag>()
-            .forEach { child: XmlTag ->
+            .forEach { child ->
+                if (isOrMatch(nsPredicate, child))
+                    matchingChildren += child
+
                 matchingChildren += findMatchingChildren(nsPredicate, child)
             }
-        matchingChildren += parent.children
-            .filterIsInstance<XmlTag>()
-            .filter { child -> isOrMatch(nsPredicate, child) }
-
         return matchingChildren
     }
 

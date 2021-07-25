@@ -3,7 +3,10 @@ package com.automation.iosccevaluator.xcui
 import com.automation.iosccevaluator.exceptions.InvalidClassChainExpressionException
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.parseFilter
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
+import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlAttributeMock
+import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlTagMock
 import com.intellij.psi.xml.XmlTag
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -55,5 +58,61 @@ internal class SelectorEvaluatorTest {
         assertEquals("", parseFilter("**/ELEMENT[$filter"))
         assertEquals("", parseFilter("**/ELEMENT$filter]"))
         assertEquals("", parseFilter(filter))
+    }
+
+    @Test
+    fun select_givenAPredicateFilter_returnsListOfMatchingParents() {
+        val filter = "\$color == \"GREEN\"\$"
+        val parent = mockk<XmlTag>()
+        val child1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        val child2 = mockk<XmlTag>()
+        val nestedChild2a = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild2b = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        every { parent.attributes } returns arrayOf()
+        every { child2.attributes } returns arrayOf()
+        every { child2.children } returns arrayOf(nestedChild2a, nestedChild2b)
+        every { parent.children } returns arrayOf(child1, child2)
+
+        assertEquals(listOf(parent, child2), select(filter, listOf(parent)))
+    }
+
+    @Test
+    fun select_givenNoMatchOnAPredicateFilter_returnsAnEmptyList() {
+        val filter = "\$color == \"BLUE\"\$"
+        val parent = mockk<XmlTag>()
+        val child = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("color", "RED")
+        ))
+        every { parent.attributes } returns arrayOf()
+        every { parent.children } returns arrayOf(child)
+
+        assertEquals(listOf<XmlTag>(), select(filter, listOf(parent)))
+    }
+
+    @Test
+    fun select_givenPredicateFilterWithNoMatchingType_returnsParentRegardless() {
+        val type = "TYPE"
+        val parent = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", type)
+        ))
+        val nestedChild1a = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NON_MATCHING_TYPE"),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild1b = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NON_MATCHING_TYPE"),
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        every { parent.children } returns arrayOf(nestedChild1a, nestedChild1b)
+        assertEquals(
+            listOf(parent),
+            select("\$color == \"GREEN\"\$", listOf(parent), type)
+        )
     }
 }

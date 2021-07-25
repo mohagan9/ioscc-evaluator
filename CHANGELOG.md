@@ -3,7 +3,6 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
-## [0.2.2]
-## [0.2.1]
+## [0.3.0]
 ### Added
-- <kbd>XCUIElement[2]</kbd> Nth child support
+* <kbd>XCUIElement[$name == "Alice"$]</kbd> Descendant children by predicate

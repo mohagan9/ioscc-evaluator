@@ -4,15 +4,16 @@ import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.parseFilter
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.containers.OrderedSet
 
 class ClassChainEvaluator(private val root: XmlTag?) {
     private val descendantSelector = "**/"
 
-    fun findAllBy(query: String): List<XmlTag> {
+    fun findAllBy(query: String): OrderedSet<XmlTag> {
         if (query[0] == '$')
             return NsPredicateEvaluator(root).findAllBy(query.trim('$'))
 
-        val matches = mutableListOf<XmlTag>()
+        val matches = OrderedSet<XmlTag>()
         if (root == null)
             return matches
 
