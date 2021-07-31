@@ -3,6 +3,18 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [0.3.1]
 ## [0.3.0]
 ## [0.3.0]
 ### Added
