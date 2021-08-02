@@ -3,19 +3,9 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 ## [0.3.1]
-## [0.3.0]
+### Added
+* Support for IntelliJ 2021.2
 ## [0.3.0]
 ### Added
-* <kbd>XCUIElement[$name == "Alice"$]</kbd> Descendant children by predicate
+* <kbd>XCUIElement[$name == "Alice"$]</kbd> Select element containing descendant children by predicate
