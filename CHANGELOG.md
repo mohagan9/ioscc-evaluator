@@ -5,7 +5,7 @@
 ## [Unreleased]
 ## [0.3.1]
 ### Added
-* Support for IntelliJ 2021.2
+- Support for IntelliJ 2021.2
 ## [0.3.0]
 ### Added
-* <kbd>XCUIElement[$name == "Alice"$]</kbd> Select element containing descendant children by predicate
+- <kbd>XCUIElement[$name == "Alice"$]</kbd> Select element containing descendant children by predicate
