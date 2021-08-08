@@ -1,6 +1,7 @@
 package com.automation.iosccevaluator.xcui
 
 import com.automation.iosccevaluator.xcui.AttributeEvaluator.isAttributeMatch
+import com.automation.iosccevaluator.xcui.SelectorEvaluator.isMatch
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.parseFilter
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
 import com.intellij.psi.xml.XmlTag
@@ -19,31 +20,40 @@ class ClassChainEvaluator(private val root: XmlTag?) {
 
         val isDescendantChildQuery = query.subSequence(0, descendantSelector.length) == descendantSelector
         val trimmedQuery = query.removePrefix(descendantSelector)
-        val type = trimmedQuery.substringBefore('[')
-        val filter = parseFilter(trimmedQuery)
+        val rootType = trimmedQuery.substringBefore('[').substringBefore('/')
+        val rootFilter = parseFilter(trimmedQuery)
+        val directChildQuery = trimmedQuery.substringAfter('/', "")
 
-        if (isAttributeMatch("type == \"$type\"", root))
-            matches += select(filter, listOf(root))
+        if (directChildQuery.isEmpty() && isAttributeMatch("type == \"$rootType\"", root))
+            matches += select(rootFilter, listOf(root))
 
-        matches += if (isDescendantChildQuery)
-            findMatchingChildren(trimmedQuery, root)
-        else
-            findDirectMatchingChildren(trimmedQuery, root)
+        if (isDescendantChildQuery)
+            matches += findMatchingChildren(trimmedQuery, root)
+        else if (directChildQuery.isNotEmpty())
+            matches += findDirectMatchingChildren(directChildQuery, root)
 
         return matches
     }
 
     private fun findDirectMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {
-        val type = query.substringBefore('[')
+        val type = query.substringBefore('[').substringBefore('/')
         val filter = parseFilter(query)
         val matchingChildren = mutableListOf<XmlTag>()
+        val childQuery = query.substringAfter('/', "")
         parent.children
             .filterIsInstance<XmlTag>()
             .forEach { child: XmlTag ->
-                if (isAttributeMatch("type == \"$type\"", child))
-                    matchingChildren += child
+                if (isAttributeMatch("type == \"$type\"", child)) {
+                    if (childQuery.isEmpty())
+                        matchingChildren += child
+                    else if (isMatch(filter, child)) {
+                        matchingChildren += findDirectMatchingChildren(childQuery, child)
+                    }
+                }
             }
-        return select(filter, matchingChildren)
+        return if (childQuery.isEmpty())
+            select(filter, matchingChildren)
+        else matchingChildren
     }
 
     private fun findMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {

@@ -35,7 +35,7 @@ internal class ClassChainEvaluatorTest {
     }
 
     @Test
-    fun findAllBy_givenRootWithMatchingChildren_withMatchOnSelectAllDirectChildrenQuery_returnsOnlyChildren() {
+    fun findAllBy_givenRootWithMatchingChildren_withMatchOnDirectPathQuery_returnsOnlyMatchingChildren() {
         val child1 = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", xcuiElementType)
         ))
@@ -43,11 +43,11 @@ internal class ClassChainEvaluatorTest {
             createXmlAttributeMock("type", xcuiElementType)
         ))
         every { root.children } returns arrayOf(child1, child2)
-        assertEquals(listOf(child1, child2), evaluator.findAllBy(xcuiElementType))
+        assertEquals(listOf(child1, child2), evaluator.findAllBy("$rootType/$xcuiElementType"))
     }
 
     @Test
-    fun findAllBy_givenRootWithNestedChildren_withMatchOnSelectAllDirectChildrenQuery_returnsOnlyDirectChildren() {
+    fun findAllBy_givenRootWithNestedChildren_withMatchOnDirectPathQuery_returnsOnlyDirectChildren() {
         val child1 = createXmlTagMock(arrayOf(
             createXmlAttributeMock("type", xcuiElementType)
         ))
@@ -70,7 +70,7 @@ internal class ClassChainEvaluatorTest {
         every { child2.children } returns arrayOf(nestedChild2)
         every { child3.children } returns arrayOf(nestedChild3)
         every { root.children } returns arrayOf(child1, child2, child3)
-        assertEquals(listOf(child1, child2), evaluator.findAllBy(xcuiElementType))
+        assertEquals(listOf(child1, child2), evaluator.findAllBy("$rootType/$xcuiElementType"))
     }
 
     @Test
@@ -127,9 +127,9 @@ internal class ClassChainEvaluatorTest {
             createXmlAttributeMock("type", xcuiElementType)
         ))
         every { root.children } returns arrayOf(child1, child2, child3)
-        assertEquals(listOf(child1), evaluator.findAllBy("$xcuiElementType[1]"))
-        assertEquals(listOf(child2), evaluator.findAllBy("$xcuiElementType[2]"))
-        assertEquals(listOf(child3), evaluator.findAllBy("$xcuiElementType[3]"))
+        assertEquals(listOf(child1), evaluator.findAllBy("$rootType/$xcuiElementType[1]"))
+        assertEquals(listOf(child2), evaluator.findAllBy("$rootType/$xcuiElementType[2]"))
+        assertEquals(listOf(child3), evaluator.findAllBy("$rootType/$xcuiElementType[3]"))
     }
 
     @Test
@@ -195,7 +195,7 @@ internal class ClassChainEvaluatorTest {
         every { child2.children } returns arrayOf(nestedChild2)
         every { child3.children } returns arrayOf(nestedChild3)
         every { root.children } returns arrayOf(child1, child2, child3)
-        assertEquals(listOf(child1), evaluator.findAllBy("$xcuiElementType[\$color == \"RED\"\$]"))
+        assertEquals(listOf(child1), evaluator.findAllBy("$rootType/$xcuiElementType[\$color == \"RED\"\$]"))
     }
 
     @Test
@@ -235,6 +235,76 @@ internal class ClassChainEvaluatorTest {
         assertEquals(
             listOf(root, child1, child2),
             evaluator.findAllBy("**/$rootType[\$color == \"RED\"\$]")
+        )
+    }
+
+    @Test
+    fun findAllBy_givenMatchOnDeepDirectChildPathQuery_returnsMatchingChild() {
+        val child1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val child2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val child3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NO_MATCH")
+        ))
+        val nestedChild1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", "NESTED_TYPE")
+        ))
+        val nestedChild2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val nestedChild3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        every { child1.children } returns arrayOf(nestedChild1)
+        every { child2.children } returns arrayOf(nestedChild2)
+        every { child3.children } returns arrayOf(nestedChild3)
+        every { root.children } returns arrayOf(child1, child2, child3)
+
+        assertEquals(listOf(nestedChild1), evaluator.findAllBy("$rootType/$xcuiElementType/NESTED_TYPE"))
+    }
+
+    @Test
+    fun findAllBy_givenMatchOnDeepDirectChildPathWithPredicateQuery_returnsMatchingChildren() {
+        val nestedType = "NESTED_TYPE"
+        val child1 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val child2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType),
+            createXmlAttributeMock("color", "GREEN")
+        ))
+        val child3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild1a = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType),
+            createXmlAttributeMock("color", "BLUE")
+        ))
+        val nestedChild1b = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType),
+            createXmlAttributeMock("color", "BLUE")
+        ))
+        val nestedChild2 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        val nestedChild3 = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType),
+            createXmlAttributeMock("color", "RED")
+        ))
+        every { child1.children } returns arrayOf(nestedChild1a, nestedChild1b)
+        every { child2.children } returns arrayOf(nestedChild2)
+        every { child3.children } returns arrayOf(nestedChild3)
+        every { root.children } returns arrayOf(child1, child2, child3)
+
+        assertEquals(
+            listOf(nestedChild1a, nestedChild1b),
+            evaluator.findAllBy("$rootType[\$color == \"RED\"\$]/$xcuiElementType[\$color == \"BLUE\"\$]/$nestedType")
         )
     }
 }

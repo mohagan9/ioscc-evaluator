@@ -40,4 +40,8 @@ object SelectorEvaluator {
             .substringAfter('[', "")
             .substringBefore(']', "")
     }
+
+    fun isMatch(filter: String, node: XmlTag): Boolean {
+        return select(filter, listOf(node)).isNotEmpty()
+    }
 }

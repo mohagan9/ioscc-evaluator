@@ -1,6 +1,7 @@
 package com.automation.iosccevaluator.xcui
 
 import com.automation.iosccevaluator.exceptions.InvalidClassChainExpressionException
+import com.automation.iosccevaluator.xcui.SelectorEvaluator.isMatch
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.parseFilter
 import com.automation.iosccevaluator.xcui.SelectorEvaluator.select
 import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlAttributeMock
@@ -8,7 +9,7 @@ import com.automation.iosccevaluator.xcui.setup.XmlTagMockFactory.createXmlTagMo
 import com.intellij.psi.xml.XmlTag
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -114,5 +115,31 @@ internal class SelectorEvaluatorTest {
             listOf(parent),
             select("\$color == \"GREEN\"\$", listOf(parent), type)
         )
+    }
+
+    @Test
+    fun isMatch_givenNoMatch_returnsFalse() {
+        val filter = "\$color == \"BLUE\"\$"
+        val parent = mockk<XmlTag>()
+        val child = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("color", "RED")
+        ))
+        every { parent.attributes } returns arrayOf()
+        every { parent.children } returns arrayOf(child)
+
+        assertFalse(isMatch(filter, parent))
+    }
+
+    @Test
+    fun isMatch_givenMatch_returnsTrue() {
+        val filter = "\$color == \"BLUE\"\$"
+        val parent = mockk<XmlTag>()
+        val child = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("color", "BLUE")
+        ))
+        every { parent.attributes } returns arrayOf()
+        every { parent.children } returns arrayOf(child)
+
+        assertTrue(isMatch(filter, parent))
     }
 }
