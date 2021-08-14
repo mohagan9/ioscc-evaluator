@@ -3,6 +3,11 @@
 build:
   excludeCorrectable: true
 
+complexity:
+  LongMethod:
+    active: true
+    threshold: 65
+
 formatting:
   Indentation:
     continuationIndentSize: 8

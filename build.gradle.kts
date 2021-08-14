@@ -99,14 +99,7 @@ tasks {
         )
 
         // Get the latest available change notes from the changelog file
-        changeNotes.set(
-            provider {
-                File(projectDir, "CHANGELOG.md").readText().lines().run {
-                    subList(indexOf("## [${version.get()}]") + 1, size)
-                }.joinToString("\n")
-                    .substringBefore("## [")
-                    .run { markdownToHTML(this) }
-            })
+        changeNotes.set(provider { changelog.getLatest().toHTML() })
     }
 
     runPluginVerifier {

@@ -8,8 +8,6 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.util.containers.OrderedSet
 
 class ClassChainEvaluator(private val root: XmlTag?) {
-    private val descendantSelector = "**/"
-
     fun findAllBy(query: String): OrderedSet<XmlTag> {
         if (query[0] == '$')
             return NsPredicateEvaluator(root).findAllBy(query.trim('$'))
@@ -18,8 +16,8 @@ class ClassChainEvaluator(private val root: XmlTag?) {
         if (root == null)
             return matches
 
-        val isDescendantChildQuery = query.subSequence(0, descendantSelector.length) == descendantSelector
-        val trimmedQuery = query.removePrefix(descendantSelector)
+        val isDescendantChildQuery = query.startsWith("**/")
+        val trimmedQuery = query.removePrefix("**/")
         val rootType = trimmedQuery.substringBefore('[').substringBefore('/')
         val rootFilter = parseFilter(trimmedQuery)
         val directChildQuery = trimmedQuery.substringAfter('/', "")
@@ -46,29 +44,38 @@ class ClassChainEvaluator(private val root: XmlTag?) {
                 if (isAttributeMatch("type == \"$type\"", child)) {
                     if (childQuery.isEmpty())
                         matchingChildren += child
+                    else if (childQuery.startsWith("**/"))
+                        matchingChildren += findMatchingChildren(childQuery.removePrefix("**/"), child)
                     else if (isMatch(filter, child)) {
                         matchingChildren += findDirectMatchingChildren(childQuery, child)
                     }
                 }
             }
         return if (childQuery.isEmpty())
-            select(filter, matchingChildren)
+            select(filter, matchingChildren, false)
         else matchingChildren
     }
 
     private fun findMatchingChildren(query: String, parent: XmlTag): List<XmlTag> {
-        val type = query.substringBefore('[')
+        val type = query.substringBefore('[').substringBefore('/')
         val filter = parseFilter(query)
         val filteredChildren = select(filter, parent.children
             .filterIsInstance<XmlTag>()
             .filter { child -> isAttributeMatch("type == \"$type\"", child) }
         )
         val matchingChildren = mutableListOf<XmlTag>()
+        val childQuery = query.substringAfter('/', "")
         parent.children
             .filterIsInstance<XmlTag>()
             .forEach { child ->
                 if (child in filteredChildren)
-                    matchingChildren += child
+                    if (childQuery.isEmpty())
+                        matchingChildren += child
+                    else if (childQuery.startsWith("**/"))
+                        matchingChildren += findMatchingChildren(childQuery.removePrefix("**/"), child)
+                    else
+                        matchingChildren += findDirectMatchingChildren(childQuery, parent)
+
                 matchingChildren += findMatchingChildren(query, child)
             }
         return matchingChildren

@@ -4,11 +4,11 @@ import com.automation.iosccevaluator.exceptions.InvalidClassChainExpressionExcep
 import com.intellij.psi.xml.XmlTag
 
 object SelectorEvaluator {
-    fun select(filter: String, collection: List<XmlTag>, type: String = ""): List<XmlTag> {
+    fun select(filter: String, collection: List<XmlTag>, isPathDescendant: Boolean = true): List<XmlTag> {
         return when {
             filter.isEmpty() -> collection
             filter[0] == '$' -> selectAllByContainsPredicate(
-                type, filter.trim('$'), collection
+                isPathDescendant, filter.trim('$'), collection
             )
             else -> try {
                 val index = filter.toInt() - 1
@@ -21,8 +21,11 @@ object SelectorEvaluator {
             }
         }
     }
-
-    private fun selectAllByContainsPredicate(type: String, predicate: String, collection: List<XmlTag>): List<XmlTag> {
+    private fun selectAllByContainsPredicate(
+            isPathDescendant: Boolean,
+            predicate: String,
+            collection: List<XmlTag>
+    ): List<XmlTag> {
         val matchingChildren = mutableListOf<XmlTag>()
         collection
             .forEach { parent ->
@@ -30,13 +33,15 @@ object SelectorEvaluator {
                 if (children.any {
                         NsPredicateEvaluator(it).findAllBy(predicate).isNotEmpty()
                 }) matchingChildren += parent
-                matchingChildren += selectAllByContainsPredicate(type, predicate, children)
+                if (isPathDescendant)
+                    matchingChildren += selectAllByContainsPredicate(isPathDescendant, predicate, children)
             }
         return matchingChildren
     }
 
     fun parseFilter(query: String): String {
         return query
+            .substringBefore('/')
             .substringAfter('[', "")
             .substringBefore(']', "")
     }

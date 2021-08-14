@@ -3,6 +3,8 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
+### Fixed
+- Expression of less than 3 characters now displays 'No Matches' dialog
 ## [0.3.1]
 ### Added
 - Support for IntelliJ 2021.2
