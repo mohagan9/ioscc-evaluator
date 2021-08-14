@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [0.4.0]
+### Added
 - <kbd>XCUIElementTypeCell/XCUIElementTypeOther/**/XCUIElementTypeStaticText</kbd> Select by path
 ## [0.3.2]
 ### Fixed
