@@ -424,4 +424,39 @@ internal class ClassChainEvaluatorTest {
             )
         )
     }
+
+    @Test
+    fun findAllBy_givenADescendantPathQuery_returnsAllMatches() {
+        val nestedType = "NESTED_TYPE"
+        val child = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", xcuiElementType)
+        ))
+        val nestedChild = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType)
+        ))
+        val nestedChildi = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType)
+        ))
+        val nestedChildii = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType)
+        ))
+        val nestedChildi3a = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType)
+        ))
+        val nestedChildi3b = createXmlTagMock(arrayOf(
+            createXmlAttributeMock("type", nestedType)
+        ))
+        every { child.children } returns arrayOf(nestedChild)
+        every { nestedChild.children } returns arrayOf(nestedChildi)
+        every { nestedChildi.children } returns arrayOf(nestedChildii)
+        every { nestedChildii.children } returns arrayOf(nestedChildi3a, nestedChildi3b)
+        every { root.children } returns arrayOf(child)
+
+        assertEquals(
+            listOf(nestedChildi, nestedChildii, nestedChildi3a, nestedChildi3b),
+            evaluator.findAllBy(
+                "**/$nestedType/$nestedType"
+            )
+        )
+    }
 }

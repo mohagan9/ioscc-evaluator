@@ -26,6 +26,7 @@ Similar to *Evaluate XPath...* but for Appium's iOS Class Chains.
  * <kbd>**/XCUIElement</kbd> Descendant children
  * <kbd>XCUIElement[2]</kbd> Nth child
  * <kbd>XCUIElement[$name == "Joe"$]</kbd> Select elements with predicate matching descendant children
+ * <kbd>XCUIElementTypeCell/XCUIElementTypeOther/**/XCUIElementTypeStaticText</kbd> Select by path
 
 ### Supported Predicate Operators ###
 * AND, OR

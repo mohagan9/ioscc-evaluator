@@ -74,7 +74,7 @@ class ClassChainEvaluator(private val root: XmlTag?) {
                     else if (childQuery.startsWith("**/"))
                         matchingChildren += findMatchingChildren(childQuery.removePrefix("**/"), child)
                     else
-                        matchingChildren += findDirectMatchingChildren(childQuery, parent)
+                        matchingChildren += findDirectMatchingChildren(childQuery, child)
 
                 matchingChildren += findMatchingChildren(query, child)
             }

@@ -3,6 +3,9 @@
 # ioscc-evaluator Changelog
 
 ## [Unreleased]
+### Added
+- <kbd>XCUIElementTypeCell/XCUIElementTypeOther/**/XCUIElementTypeStaticText</kbd> Select by path
+## [0.3.2]
 ### Fixed
 - Expression of less than 3 characters now displays 'No Matches' dialog
 ## [0.3.1]
