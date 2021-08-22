@@ -15,6 +15,8 @@ plugins {
     id("org.jetbrains.changelog") version "1.2.1"
     // detekt linter - read more: https://detekt.github.io/detekt/gradle.html
     id("io.gitlab.arturbosch.detekt") version "1.18.0"
+    // Jacoco support
+    jacoco
 }
 
 group = properties("pluginGroup")
@@ -64,6 +66,10 @@ detekt {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 tasks {
     // Set the compatibility versions to 11
     withType<JavaCompile> {
@@ -76,6 +82,22 @@ tasks {
 
     withType<Detekt> {
         jvmTarget = "11"
+    }
+
+    withType<JacocoReport> {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = true
+        }
+        afterEvaluate {
+            classDirectories.setFrom(
+                files(classDirectories.files.map {
+                    fileTree(it) {
+                        exclude("**/iosccevaluator/actions/**","**/iosccevaluator/dialogs/**")
+                    }
+                })
+            )
+        }
     }
 
     patchPluginXml {
