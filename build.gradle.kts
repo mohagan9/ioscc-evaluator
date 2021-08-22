@@ -93,7 +93,11 @@ tasks {
             classDirectories.setFrom(
                 files(classDirectories.files.map {
                     fileTree(it) {
-                        exclude("**/iosccevaluator/actions/**","**/iosccevaluator/dialogs/**")
+                        exclude(
+                            "**/iosccevaluator/actions/**",
+                            "**/iosccevaluator/dialogs/**",
+                            "**/iosccevaluator/MyBundle.class"
+                        )
                     }
                 })
             )
