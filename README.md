@@ -4,6 +4,7 @@
 [![Version](https://img.shields.io/jetbrains/plugin/v/17047.svg)](https://plugins.jetbrains.com/plugin/17047)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/17047.svg)](https://plugins.jetbrains.com/plugin/17047)
 ![Code Quality](https://www.code-inspector.com/project/21797/score/svg)
+[![codecov](https://codecov.io/gh/mohagan9/ioscc-evaluator/branch/main/graph/badge.svg?token=5QBQMJD9GO)](https://codecov.io/gh/mohagan9/ioscc-evaluator)
 
 <!-- Plugin description -->
 ### iOS Class Chain Evaluator Plugin for IntelliJ
