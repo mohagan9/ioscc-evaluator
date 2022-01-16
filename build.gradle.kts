@@ -29,7 +29,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.19.0")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("io.mockk:mockk:1.12.1")
 }
 
