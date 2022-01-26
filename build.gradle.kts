@@ -27,7 +27,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.19.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("io.mockk:mockk:1.12.1")
