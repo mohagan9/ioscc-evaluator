@@ -1,4 +1,10 @@
-# ioscc-evaluator
+# Deprecated
+
+AI / LLMs can do this now!
+
+------------
+
+## ioscc-evaluator
 
 ![Build](https://github.com/mohagan9/ioscc-evaluator/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/17047.svg)](https://plugins.jetbrains.com/plugin/17047)
